@@ -1,26 +1,26 @@
 #ifndef MODEL_AFFINE_TRANSFER_H
 #define MODEL_AFFINE_TRANSFER_H
 
+#include "../viewer_data.h"
+#include "rotation_strategy/rotation_strategy.h"
+
 class ModelAffineTransfer {
  public:
-  ModelAffineTransfer(){};
+  ModelAffineTransfer() {}
+  ModelAffineTransfer(RotationStrategy *rot) : rotation(rot) {}
+  ~ModelAffineTransfer() { delete rotation; }
+
+  void Rotate(coordinates &data) { rotation->Rotate(data); }
+
+  void Translate(coordinates &data);
+
+  void Scale(coordinates &data);
+  void Center(coordinates &data);
+  void ObjectReduct(coordinates &data);
+  void MaxMin(coordinates &data);
 
  private:
-  void translate(float num_x, float *num_last_x, float num_y, float *num_last_y,
-                 float num_z, float *num_last_z, int size_v, float *v);
-
-  void rotationOx(float num_x, float *num_last_x, int size_v, float *v);
-  void rotationOy(float num_y, float *num_last_y, int size_v, float *v);
-  void rotationOz(float num_z, float *num_last_z, int size_v, float *v);
-  void rotateArr(int size_v, float *v, float matrix[]);
-
-  void scale(float num, float *num_last, int size_v, float *v);
-  void center(int size_v, float *v, float *max_x, float *min_x, float *max_y,
-              float *min_y, float *max_z, float *min_z);
-  void objectReduct(int size_v, float *v, float *max_x, float *min_x,
-                    float *max_y, float *min_y, float *max_z, float *min_z);
-  void maxMin(int size_v, float *v, float *max_x, float *min_x, float *max_y,
-              float *min_y, float *max_z, float *min_z);
-}
+  RotationStrategy *rotation;
+};
 
 #endif  // MODEL_AFFINE_TRANSFER_H
