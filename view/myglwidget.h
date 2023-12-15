@@ -1,8 +1,9 @@
 #ifndef MYGLWIDGET_H
 #define MYGLWIDGET_H
 
-// #include <GL/gl.h>
-// #include <GL/glu.h>
+#define GL_SILENCE_DEPRECATION
+
+#include <OpenGL/gl.h>
 
 #include <QApplication>
 #include <QColorDialog>
@@ -21,17 +22,8 @@
 #include <iostream>
 #include <sstream>
 
-extern "C" {
-#include "FilesOnC/parser.h"
-}
-
-typedef struct autosave {
-  bool radio;
-  int stipple, square, size_line, size_point;
-  float rL, gL, bL;
-  float rP, gP, bP;
-  float rB, gB, bB;
-} autosave;
+#include "../controller/controller.h"
+#include "../viewer_data.h"
 
 class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
@@ -39,34 +31,40 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   ~MyGLWidget();
 
   int size_v, size_f;
-  bool isClicking, radio;
+  bool is_clicking, radio;
   int stipple, square;
   float size_line, size_point;
-  autosave save;
 
-  void parcer(QString fileName);
-  void move(float num_x, float num_y, float num_z);
-  void rotateOx(float num);
-  void rotateOy(float num);
-  void rotateOz(float num);
-  void projection(bool checked);
-  void scaleXYZ(float num);
-  void centerFigure();
-  void reduction();
-  void line_type(int check_line);
-  void projectionParallel();
-  void projectionCenter();
-  void line_width(double size);
-  void point_type(int check_point);
-  void point_size(double size);
-  void colorLine(QColor color);
-  void colorPoint(QColor color);
-  void colorBackground(QColor color);
-  void saveSetting();
-  void loadSetting();
-  void gifScreencast();
-  void AutosaveWriting(autosave save);
-  void AutoSaveReading(autosave *save);
+  void Parcer(QString fileName);
+  void Move();
+  void Rotate();
+  void Projection(bool checked);
+  void Scale();
+  void CenterFigure();
+  void Reduction();
+  void LineType(int check_line);
+  void ProjectionParallel();
+  void ProjectionCenter();
+  void LineWidth(double size);
+  void PointType(int check_point);
+  void PointSize(double size);
+  void ColorLine(QColor color);
+  void ColorPoint(QColor color);
+  void ColorBackground(QColor color);
+  void SaveSetting();
+  void LoadSetting();
+  void GifScreencast();
+
+  s21::Coordinates GetCoordinates() { return dataCoordinates; }
+  void SetCoordinates();
+
+  /* сеттеры mainwindow */
+  void SetScale(float num);
+  void SetRotateOx(float num);
+  void SetRotateOy(float num);
+  void SetRotateOz(float num);
+  void SetMove(float numX, float numY, float numZ);
+  void SetController(s21::Controller &contr);
 
  private slots:
   void initializeGL() override;
@@ -78,21 +76,19 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void paintFigure();
   void style();
 
+ protected:
+  s21::Coordinates dataCoordinates{};
+  s21::Autosave save{};
+
  private:
-  GLfloat *v;
-  GLuint *f;
-  float xRot, yRot, zRot;
-  const char *name_file;
-  float num_last_x_move, num_last_y_move, num_last_z_move;
-  float num_last_x_rot, num_last_y_rot, num_last_z_rot;
-  float num_last_scale;
-  float max_x, min_x, max_y, min_y, max_z, min_z;
-  GLfloat rL, gL, bL;
-  GLfloat rP, gP, bP;
-  GLfloat rB, gB, bB;
-  QPoint mPos, mDelta;
-  int glwidth, glheight, err;
-  uint8_t image[800 * 800 * 4];
+  float xRot, yRot, zRot;  // насколько повернуть модель
+  GLfloat red_line, green_line, blue_line;  // параметры цвета модели линий
+  GLfloat red_point, green_point, blue_point;  // параметры цвета модели точек
+  GLfloat red_backg, green_backg, blue_backg;  // параметры цвета бэкграунда
+  QPoint mPos, mDelta;  // параметры движения мышки
+  int glwidth, glheight;
+  uint8_t image[640 * 2 * 480 * 2 * 4];
+  s21::Controller *controller_;
 };
 
 #endif  // MYGLWIDGET_H

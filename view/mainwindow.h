@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "controller/controller.h"
 #include "myglwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -9,11 +10,13 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+namespace s21 {
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = nullptr);
+  MainWindow(s21::Controller &contra, QWidget *parent = nullptr);
   ~MainWindow();
 
  private slots:
@@ -39,8 +42,6 @@ class MainWindow : public QMainWindow {
   void on_radio_button_point_disable_clicked();
   void on_push_button_color_point_clicked();
   void on_push_button_color_background_clicked();
-  void on_push_button_save_setting_clicked();
-  void on_push_button_load_setting_clicked();
 
   void on_screenshot_clicked();
 
@@ -50,8 +51,16 @@ class MainWindow : public QMainWindow {
 
   void on_radio_button_jpeg_clicked();
 
+  void on_push_button_save_setting_clicked();
+
+  void on_push_button_load_setting_clicked();
+
  private:
   Ui::MainWindow *ui;
+  virtual void wheelEvent(QWheelEvent *event);
+  s21::Controller &controller;
 };
+
+}  // namespace s21
 
 #endif  // MAINWINDOW_H

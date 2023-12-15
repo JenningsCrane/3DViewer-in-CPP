@@ -1,26 +1,24 @@
-#ifndef MODEL_AFFINE_TRANSFER_H
-#define MODEL_AFFINE_TRANSFER_H
+#ifndef CPP4_3DVIEWER_V2_0_1_MODEL_MODEL_AFINE_TRANSFER_H_
+#define CPP4_3DVIEWER_V2_0_1_MODEL_MODEL_AFINE_TRANSFER_H_
 
 #include "../viewer_data.h"
 #include "rotation_strategy/rotation_strategy.h"
 
+namespace s21 {
+
 class ModelAffineTransfer {
  public:
-  ModelAffineTransfer() {}
-  ModelAffineTransfer(RotationStrategy *rot) : rotation(rot) {}
-  ~ModelAffineTransfer() { delete rotation; }
-
-  void Rotate(coordinates &data) { rotation->Rotate(data); }
-
-  void Translate(coordinates &data);
-
-  void Scale(coordinates &data);
-  void Center(coordinates &data);
-  void ObjectReduct(coordinates &data);
-  void MaxMin(coordinates &data);
-
- private:
-  RotationStrategy *rotation;
+  void Rotate(const RotationStrategy& rotation, std::vector<float>& v,
+              Coordinates& data);
+  void Translate(std::vector<float>& v, Coordinates& data);
+  void Scale(std::vector<float>& vertex, Coordinates& data);
+  void Center(std::vector<float>& vertex);
+  void CalculateMaxOrMin(std::vector<float>& vertex, Coordinates& data);
+  template <typename T>
+  void WritingMaxOrMin(T& coordinate, float& max, float& min);
+  void ObjectReduct(std::vector<float>& vertex, Coordinates& data);
 };
 
-#endif  // MODEL_AFFINE_TRANSFER_H
+}  // namespace s21
+
+#endif  // CPP4_3DVIEWER_V2_0_1_MODEL_MODEL_AFINE_TRANSFER_H_
